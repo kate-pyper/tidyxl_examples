@@ -1,4 +1,7 @@
 # Community Blood Service
+library(tidyverse)
+library(tidyxl)
+library(unpivotr)
 
 cells <- xlsx_cells("Data/CBS.xlsx")
 
@@ -17,15 +20,15 @@ cells1 <- cells %>%
   # Select cells to be columns
   behead("up", "year") %>%
   behead("up", "month") %>%
-  behead("left", "specialty") %>% #left # specialty or location # assign
+  behead("left-up", "specialty") %>% #left # specialty or location # assign
   behead("left", "status") %>%  #left
   
   # Clean miscellaneous cells
   filter(status != "Total:",
          !str_detect(month, "Sum"),
          !str_detect(year, "Sum")) %>% 
-  fill(specialty) %>% #direction "down"
+  #fill(specialty) %>% #direction "down"
   
   # Converting to dates
   mutate(date = my(paste(month, year))) %>%
-  select(numeric, specialty, status, date) #%>%
+  select(specialty, status, date, n = numeric) #%>%

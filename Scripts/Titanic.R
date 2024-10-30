@@ -11,6 +11,7 @@ titanic <- xlsx_cells("Data/titanic.xlsx")
 
 View(titanic) # reads in a table describing individual cells
 
+# Wide format
 behead(titanic, "up-left", "heading1") %>% # make first row of headings a heading
   behead("up", "heading2") %>%  # make second row of headings a heading
   behead("up", "heading3") %>% # make third row of headings a heading
@@ -21,5 +22,14 @@ behead(titanic, "up-left", "heading1") %>% # make first row of headings a headin
   fill(character, .direction = "down") %>% 
   mutate(data_type = case_when(col == 1 & is_blank ~ "character", .default = data_type)) %>% # need to update data type so that it pulls through in spatter
   select(row, heading, data_type, character, numeric, logical, date) %>% 
-  spatter(key = heading) %>% 
+  spatter(key = heading) %>%
+  select(-c(row, logical, date)) %>% 
+  View
+
+# tidy format
+behead(titanic, "up-left", "Age") %>% # Get age
+  behead("up", "Survived") %>%  # get status
+  behead("left-up", "Class") %>% # get class
+  behead("left", "Sex") %>% # get sex
+  select(Age, Survived, Class, Sex, N = numeric) %>% 
   View
